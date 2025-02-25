@@ -30,6 +30,25 @@ $subscriberModel = new Subscriber($db);
 // Get subscriber ID from URL
 $subscriberId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+// Validate subscriber ID
+if ($subscriberId <= 0) {
+    $_SESSION['flash_message'] = 'Invalid subscriber ID';
+    $_SESSION['flash_message_type'] = 'error';
+    header('Location: ' . url('subscribers'));
+    exit;
+}
+
+// Get subscriber data
+$subscriber = $subscriberModel->getById($subscriberId, $companyId);
+
+// Check if subscriber exists and belongs to this company
+if (!$subscriber) {
+    $_SESSION['flash_message'] = 'Subscriber not found';
+    $_SESSION['flash_message_type'] = 'error';
+    header('Location: ' . url('subscribers'));
+    exit;
+}
+
 // Get subscriber plans
 $subscriberPlanModel = new SubscriberPlan($db);
 $subscriberPlans = $subscriberPlanModel->getAllForSubscriber($subscriberId, $companyId);
@@ -61,30 +80,10 @@ try {
 // echo "Plans: <pre>" . print_r($subscriberPlans, true) . "</pre>";
 // die();
 
-
-// Validate subscriber ID
-if ($subscriberId <= 0) {
-    $_SESSION['flash_message'] = 'Invalid subscriber ID';
-    $_SESSION['flash_message_type'] = 'error';
-    header('Location: ' . url('subscribers'));
-    exit;
-}
-
-// Get subscriber data
-$subscriber = $subscriberModel->getById($subscriberId, $companyId);
-
-// Check if subscriber exists and belongs to this company
-if (!$subscriber) {
-    $_SESSION['flash_message'] = 'Subscriber not found';
-    $_SESSION['flash_message_type'] = 'error';
-    header('Location: ' . url('subscribers'));
-    exit;
-}
-
-// TODO: Get subscriber plans, statements, and payments
-$subscriberPlans = []; // This would come from a SubscriberPlan model
-$statements = []; // This would come from a Statement model
-$payments = []; // This would come from a Payment model
+// Initialize empty arrays for statements and payments 
+// These will be implemented later
+$statements = []; 
+$payments = []; 
 
 // Load view
 require __DIR__ . '/../../views/subscribers/view.view.php';
