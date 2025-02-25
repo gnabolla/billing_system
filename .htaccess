@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /ilink
+
+# If the requested resource exists as an actual file or directory, serve it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Otherwise, rewrite the request to index.php
+RewriteRule ^ index.php [QSA,L]
