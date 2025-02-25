@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../Database.php';
 require_once __DIR__ . '/../../services/Auth.php';
 require_once __DIR__ . '/../../models/Subscriber.php';
 require_once __DIR__ . '/../../functions.php';
+require_once __DIR__ . '/../../models/SubscriberPlan.php';
 
 $config = require __DIR__ . '/../../config.php';
 
@@ -28,6 +29,38 @@ $subscriberModel = new Subscriber($db);
 
 // Get subscriber ID from URL
 $subscriberId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Get subscriber plans
+$subscriberPlanModel = new SubscriberPlan($db);
+$subscriberPlans = $subscriberPlanModel->getAllForSubscriber($subscriberId, $companyId);
+
+// Direct database query for debugging
+try {
+    $sql = "SELECT sp.*, p.plan_name, p.monthly_fee
+            FROM subscriber_plans sp
+            JOIN plans p ON sp.plan_id = p.plan_id
+            WHERE sp.subscriber_id = :subscriber_id
+            ORDER BY sp.created_at DESC";
+            
+    $stmt = $db->query($sql, ['subscriber_id' => $subscriberId]);
+    $directPlans = $stmt->fetchAll();
+    
+    if (empty($subscriberPlans) && !empty($directPlans)) {
+        error_log("View debugging: Model returned empty results but direct query found plans:");
+        error_log(print_r($directPlans, true));
+        // Use the direct results as a fallback
+        $subscriberPlans = $directPlans;
+    }
+} catch (Exception $e) {
+    error_log("Error in direct plan query: " . $e->getMessage());
+}
+
+// Debug output
+// echo "Subscriber ID: " . $subscriberId . "<br>";
+// echo "Company ID: " . $companyId . "<br>";
+// echo "Plans: <pre>" . print_r($subscriberPlans, true) . "</pre>";
+// die();
+
 
 // Validate subscriber ID
 if ($subscriberId <= 0) {

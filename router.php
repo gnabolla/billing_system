@@ -28,6 +28,19 @@ $routes = [
   "/subscribers/edit" => "controllers/subscribers/edit.php",
   "/subscribers/view" => "controllers/subscribers/view.php",
   "/subscribers/delete" => "controllers/subscribers/delete.php",
+  "/subscribers/assign-plan" => "controllers/subscriber-plans/assign.php", // Added for backward compatibility
+  
+  // Plan routes
+  "/plans" => "controllers/plans.php",
+  "/plans/create" => "controllers/plans/create.php",
+  "/plans/edit" => "controllers/plans/edit.php",
+  "/plans/view" => "controllers/plans/view.php",
+  "/plans/delete" => "controllers/plans/delete.php",
+  
+  // Subscriber-Plan routes
+  "/subscriber-plans/assign" => "controllers/subscriber-plans/assign.php",
+  "/subscriber-plans/edit" => "controllers/subscriber-plans/edit.php",
+  "/subscriber-plans/terminate" => "controllers/subscriber-plans/terminate.php",
 ];
 
 function routesToController(string $uri, array $routes): void
