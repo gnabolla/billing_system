@@ -12,9 +12,9 @@
                         <div class="alert alert-danger">
                             <?= htmlspecialchars($error) ?>
                         </div>
-                        <?php endif; ?>
+                    <?php endif; ?>
 
-<form method="POST" action="<?= url('login') ?>">
+                    <form method="POST" action="<?= url('login') ?>">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username or Email</label>
                             <input type="text" class="form-control" id="username" name="username"

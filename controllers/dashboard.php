@@ -33,8 +33,19 @@ $subscriberCount = $subscriberModel->countByCompany($_SESSION['company_id']);
 $subscriberPlanModel = new SubscriberPlan($db);
 $activePlansCount = $subscriberPlanModel->countActiveByCompany($_SESSION['company_id']);
 
-// For statements count - will be implemented later
-$statementsCount = 0;
+// Get statements count
+try {
+    $sql = "SELECT COUNT(*) as statement_count 
+            FROM statements 
+            WHERE company_id = :company_id";
+    
+    $stmt = $db->query($sql, ['company_id' => $_SESSION['company_id']]);
+    $result = $stmt->fetch();
+    $statementsCount = $result['statement_count'] ?? 0;
+} catch (Exception $e) {
+    error_log("Error fetching statements count: " . $e->getMessage());
+    $statementsCount = 0;
+}
 
 // Load the dashboard view
 require __DIR__ . '/../views/dashboard.view.php';

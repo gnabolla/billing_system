@@ -41,6 +41,16 @@ $routes = [
   "/subscriber-plans/assign" => "controllers/subscriber-plans/assign.php",
   "/subscriber-plans/edit" => "controllers/subscriber-plans/edit.php",
   "/subscriber-plans/terminate" => "controllers/subscriber-plans/terminate.php",
+  
+  // Statement routes
+  "/statements" => "controllers/statements.php",
+  "/statements/create" => "controllers/statements/create.php",
+  "/statements/view" => "controllers/statements/view.php",
+  
+  // Payment routes
+  "/payments" => "controllers/payments.php",
+  "/payments/create" => "controllers/payments/create.php",
+  "/payments/view" => "controllers/payments/view.php"
 ];
 
 function routesToController(string $uri, array $routes): void

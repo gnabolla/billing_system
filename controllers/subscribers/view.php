@@ -1,5 +1,4 @@
 <?php
-
 // Use absolute paths relative to the project root
 require_once __DIR__ . '/../../Database.php';
 require_once __DIR__ . '/../../services/Auth.php';
@@ -53,14 +52,14 @@ if (!$subscriber) {
 $subscriberPlanModel = new SubscriberPlan($db);
 $subscriberPlans = $subscriberPlanModel->getAllForSubscriber($subscriberId, $companyId);
 
-// Direct database query for debugging
+// Direct database query for debugging subscriber plans
 try {
     $sql = "SELECT sp.*, p.plan_name, p.monthly_fee
             FROM subscriber_plans sp
             JOIN plans p ON sp.plan_id = p.plan_id
             WHERE sp.subscriber_id = :subscriber_id
             ORDER BY sp.created_at DESC";
-            
+    
     $stmt = $db->query($sql, ['subscriber_id' => $subscriberId]);
     $directPlans = $stmt->fetchAll();
     
@@ -74,16 +73,56 @@ try {
     error_log("Error in direct plan query: " . $e->getMessage());
 }
 
-// Debug output
+// Fetch recent statements for the subscriber
+try {
+    $sql = "SELECT * 
+            FROM statements
+            WHERE subscriber_id = :subscriber_id
+            AND company_id = :company_id
+            ORDER BY bill_period_end DESC
+            LIMIT 5"; // Limit to 5 most recent statements
+
+    $stmt = $db->query($sql, [
+        'subscriber_id' => $subscriberId,
+        'company_id' => $companyId
+    ]);
+    $statements = $stmt->fetchAll();
+
+    // Debug logging
+    if (empty($statements)) {
+        error_log("No statements found for subscriber ID: $subscriberId");
+    }
+} catch (Exception $e) {
+    error_log("Error fetching statements: " . $e->getMessage());
+    $statements = [];
+}
+
+// Fetch recent payments (if needed)
+$payments = [];
+try {
+    $sql = "SELECT p.*, s.statement_no
+            FROM payments p
+            JOIN statements s ON p.statement_id = s.statement_id
+            WHERE s.subscriber_id = :subscriber_id
+            AND s.company_id = :company_id
+            ORDER BY p.payment_date DESC
+            LIMIT 5"; // Limit to 5 most recent payments
+
+    $stmt = $db->query($sql, [
+        'subscriber_id' => $subscriberId,
+        'company_id' => $companyId
+    ]);
+    $payments = $stmt->fetchAll();
+} catch (Exception $e) {
+    error_log("Error fetching payments: " . $e->getMessage());
+    $payments = [];
+}
+
+// Uncomment for debugging
 // echo "Subscriber ID: " . $subscriberId . "<br>";
 // echo "Company ID: " . $companyId . "<br>";
-// echo "Plans: <pre>" . print_r($subscriberPlans, true) . "</pre>";
+// echo "Statements: <pre>" . print_r($statements, true) . "</pre>";
 // die();
-
-// Initialize empty arrays for statements and payments 
-// These will be implemented later
-$statements = []; 
-$payments = []; 
 
 // Load view
 require __DIR__ . '/../../views/subscribers/view.view.php';

@@ -8,6 +8,6 @@ return [
         'charset' => 'utf8mb4'
     ],
     'app' => [
-        'base_path' => '/ilink'
+        'base_path' => '/billing'
     ]
 ];

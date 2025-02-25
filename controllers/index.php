@@ -13,8 +13,6 @@ $auth = new Auth($db);
 
 // Check if user is logged in
 if ($auth->isLoggedIn()) {
-    
-dd("hit");
     // Redirect to dashboard if logged in
     header('Location: ' . url('dashboard'));
     exit;

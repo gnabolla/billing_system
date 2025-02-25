@@ -1,5 +1,4 @@
 <?php
-
 // Use absolute paths relative to the project root
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../services/Auth.php';
