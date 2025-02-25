@@ -9,7 +9,6 @@ $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 if (strpos($uri, $basePath) === 0) {
     $uri = substr($uri, strlen($basePath));
 }
-
 // Ensure there's always a leading slash
 if (empty($uri) || $uri === '/') {
     $uri = '/';
