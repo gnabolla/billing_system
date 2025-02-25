@@ -22,13 +22,13 @@ class Subscriber
     {
         $params = ['company_id' => $companyId];
         $whereConditions = ['company_id = :company_id'];
-        
+
         // Apply filters if provided
         if (!empty($filters['status'])) {
             $whereConditions[] = 'status = :status';
             $params['status'] = $filters['status'];
         }
-        
+
         // Search by name, account number, or phone
         if (!empty($filters['search'])) {
             $whereConditions[] = '(account_no LIKE :search OR 
@@ -37,22 +37,20 @@ class Subscriber
                                    phone_number LIKE :search)';
             $params['search'] = '%' . $filters['search'] . '%';
         }
-        
+
         $whereClause = implode(' AND ', $whereConditions);
-        
+
         $sql = "SELECT * FROM subscribers 
-                WHERE $whereClause 
-                ORDER BY created_at DESC 
-                LIMIT :limit OFFSET :offset";
-        
-        $stmt = $this->db->query($sql, array_merge($params, [
-            'limit' => $limit,
-            'offset' => $offset
-        ]));
-        
+        WHERE $whereClause 
+        ORDER BY created_at DESC 
+        LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+
+        // Then remove limit and offset from the parameters
+        $stmt = $this->db->query($sql, $params);
+
         return $stmt->fetchAll();
     }
-    
+
     /**
      * Count total subscribers for a company
      * 
@@ -64,13 +62,13 @@ class Subscriber
     {
         $params = ['company_id' => $companyId];
         $whereConditions = ['company_id = :company_id'];
-        
+
         // Apply filters if provided
         if (!empty($filters['status'])) {
             $whereConditions[] = 'status = :status';
             $params['status'] = $filters['status'];
         }
-        
+
         // Search by name, account number, or phone
         if (!empty($filters['search'])) {
             $whereConditions[] = '(account_no LIKE :search OR 
@@ -79,16 +77,16 @@ class Subscriber
                                    phone_number LIKE :search)';
             $params['search'] = '%' . $filters['search'] . '%';
         }
-        
+
         $whereClause = implode(' AND ', $whereConditions);
-        
+
         $sql = "SELECT COUNT(*) as count FROM subscribers WHERE $whereClause";
         $stmt = $this->db->query($sql, $params);
         $result = $stmt->fetch();
-        
+
         return (int) $result['count'];
     }
-    
+
     /**
      * Get subscriber by ID
      * 
@@ -101,15 +99,15 @@ class Subscriber
         $sql = "SELECT * FROM subscribers 
                 WHERE subscriber_id = :id AND company_id = :company_id 
                 LIMIT 1";
-                
+
         $stmt = $this->db->query($sql, [
             'id' => $id,
             'company_id' => $companyId
         ]);
-        
+
         return $stmt->fetch() ?: false;
     }
-    
+
     /**
      * Get subscriber by account number
      * 
@@ -122,15 +120,15 @@ class Subscriber
         $sql = "SELECT * FROM subscribers 
                 WHERE account_no = :account_no AND company_id = :company_id 
                 LIMIT 1";
-                
+
         $stmt = $this->db->query($sql, [
             'account_no' => $accountNo,
             'company_id' => $companyId
         ]);
-        
+
         return $stmt->fetch() ?: false;
     }
-    
+
     /**
      * Create a new subscriber
      * 
@@ -142,23 +140,23 @@ class Subscriber
         // Set timestamps
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');
-        
+
         // If registration_date is not provided, use current date
         if (!isset($data['registration_date']) || empty($data['registration_date'])) {
             $data['registration_date'] = date('Y-m-d');
         }
-        
+
         // If status is not provided, set as Active
         if (!isset($data['status'])) {
             $data['status'] = 'Active';
         }
-        
+
         // Build the SQL query
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
-        
+
         $sql = "INSERT INTO subscribers ($columns) VALUES ($placeholders)";
-        
+
         try {
             $stmt = $this->db->query($sql, $data);
             return $this->db->connection->lastInsertId();
@@ -167,7 +165,7 @@ class Subscriber
             return false;
         }
     }
-    
+
     /**
      * Update a subscriber
      * 
@@ -180,21 +178,21 @@ class Subscriber
     {
         // Add updated_at timestamp
         $data['updated_at'] = date('Y-m-d H:i:s');
-        
+
         // Build SET clause for SQL
         $setClause = '';
         foreach ($data as $column => $value) {
             $setClause .= "$column = :$column, ";
         }
         $setClause = rtrim($setClause, ', ');
-        
+
         $sql = "UPDATE subscribers 
                 SET $setClause 
                 WHERE subscriber_id = :subscriber_id AND company_id = :company_id";
-                
+
         $data['subscriber_id'] = $id;
         $data['company_id'] = $companyId;
-        
+
         try {
             $stmt = $this->db->query($sql, $data);
             return $stmt->rowCount() > 0;
@@ -203,7 +201,7 @@ class Subscriber
             return false;
         }
     }
-    
+
     /**
      * Delete a subscriber
      * 
@@ -214,26 +212,26 @@ class Subscriber
     public function delete($id, $companyId)
     {
         // Check if subscriber has any related records before deleting
-        
+
         // For now, soft delete by updating status
         $sql = "UPDATE subscribers 
                 SET status = 'Deleted', updated_at = :updated_at 
                 WHERE subscriber_id = :id AND company_id = :company_id";
-                
+
         try {
             $stmt = $this->db->query($sql, [
                 'updated_at' => date('Y-m-d H:i:s'),
                 'id' => $id,
                 'company_id' => $companyId
             ]);
-            
+
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             error_log("Error deleting subscriber: " . $e->getMessage());
             return false;
         }
     }
-    
+
     /**
      * Generate a unique account number
      * 
@@ -244,20 +242,20 @@ class Subscriber
     {
         // Get current year
         $year = date('Y');
-        
+
         // Get count of subscribers for this company in current year
         $sql = "SELECT COUNT(*) as count FROM subscribers 
                 WHERE company_id = :company_id 
                 AND YEAR(created_at) = :year";
-                
+
         $stmt = $this->db->query($sql, [
             'company_id' => $companyId,
             'year' => $year
         ]);
-        
+
         $result = $stmt->fetch();
         $count = (int) $result['count'] + 1;
-        
+
         // Format: YYYY-CompanyID-SequentialNumber (padded to 5 digits)
         return $year . '-' . $companyId . '-' . str_pad($count, 5, '0', STR_PAD_LEFT);
     }

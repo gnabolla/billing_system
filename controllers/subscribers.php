@@ -7,7 +7,6 @@ require_once __DIR__ . '/../models/Subscriber.php';
 require_once __DIR__ . '/../functions.php';
 
 $config = require __DIR__ . '/../config.php';
-
 // Initialize database
 $db = new Database($config['database']);
 
@@ -35,7 +34,6 @@ $filters = [
     'status' => isset($_GET['status']) ? $_GET['status'] : '',
     'search' => isset($_GET['search']) ? $_GET['search'] : ''
 ];
-
 // Get subscribers
 $subscribers = $subscriberModel->getAllByCompany($companyId, $filters, $limit, $offset);
 

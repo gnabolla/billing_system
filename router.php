@@ -21,6 +21,13 @@ $routes = [
   "/register" => "controllers/register.php",
   "/dashboard" => "controllers/dashboard.php",
   "/logout" => "controllers/logout.php",
+  
+  // Subscriber routes
+  "/subscribers" => "controllers/subscribers.php",
+  "/subscribers/create" => "controllers/subscribers/create.php",
+  "/subscribers/edit" => "controllers/subscribers/edit.php",
+  "/subscribers/view" => "controllers/subscribers/view.php",
+  "/subscribers/delete" => "controllers/subscribers/delete.php",
 ];
 
 function routesToController(string $uri, array $routes): void

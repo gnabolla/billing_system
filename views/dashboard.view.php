@@ -13,24 +13,24 @@
                 </div>
                 <div class="card-body">
                     <h4>Welcome, <?= htmlspecialchars($user['first_name']) ?> <?= htmlspecialchars($user['last_name']) ?>!</h4>
-                    
+
                     <div class="row mt-4">
                         <div class="col-md-4">
                             <div class="card bg-primary text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Subscribers</h5>
-                                    <p class="card-text display-4">0</p>
-                                    <a href="/subscribers" class="btn btn-light btn-sm">View All</a>
+                                    <p class="card-text display-4"><?= $subscriberCount ?></p>
+                                    <a href="<?= url('subscribers') ?>" class="btn btn-light btn-sm">View All</a>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <div class="card bg-success text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Active Plans</h5>
-                                    <p class="card-text display-4">0</p>
-                                    <a href="/plans" class="btn btn-light btn-sm">View All</a>
+                                    <p class="card-text display-4"><?= $activePlansCount ?></p>
+                                    <a href="<?= url('plans') ?>" class="btn btn-light btn-sm">View All</a>
                                 </div>
                             </div>
                         </div>
@@ -39,13 +39,13 @@
                             <div class="card bg-info text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Statements</h5>
-                                    <p class="card-text display-4">0</p>
-                                    <a href="/statements" class="btn btn-light btn-sm">View All</a>
+                                    <p class="card-text display-4"><?= $statementsCount ?></p>
+                                    <a href="<?= url('statements') ?>" class="btn btn-light btn-sm">View All</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <div class="card">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">

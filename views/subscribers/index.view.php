@@ -1,10 +1,10 @@
-<?php include '../partials/head.php' ?>
-<?php include '../partials/nav.php' ?>
+<?php include  __DIR__ . '/../partials/head.php' ?>
+<?php include  __DIR__ . '/../partials/nav.php' ?>
 
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3">
-            <?php include '../partials/sidebar.php' ?>
+            <?php include  __DIR__ . '/../partials/sidebar.php' ?>
         </div>
         <div class="col-md-9">
             <div class="card">
@@ -215,4 +215,4 @@
     });
 </script>
 
-<?php include '../partials/foot.php' ?>
+<?php include  __DIR__ . '/../partials/foot.php' ?>

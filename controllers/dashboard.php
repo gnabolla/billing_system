@@ -3,6 +3,7 @@
 // Use absolute paths relative to the project root
 require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../services/Auth.php';
+require_once __DIR__ . '/../models/Subscriber.php';
 require_once __DIR__ . '/../functions.php';
 
 $config = require __DIR__ . '/../config.php';
@@ -22,6 +23,14 @@ if (!$auth->isLoggedIn()) {
 // Get current user and company data
 $user = $auth->getCurrentUser();
 $company = $auth->getCurrentCompany();
+
+// Get subscriber count
+$subscriberModel = new Subscriber($db);
+$subscriberCount = $subscriberModel->countByCompany($_SESSION['company_id']);
+
+// TODO: Get active plans count, statements count
+$activePlansCount = 0;
+$statementsCount = 0;
 
 // Load the dashboard view
 require __DIR__ . '/../views/dashboard.view.php';
