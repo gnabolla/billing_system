@@ -117,4 +117,80 @@ class User
     {
         return password_verify($password, $hash);
     }
+
+    /**
+     * Update user profile data
+     * 
+     * @param int $userId User ID
+     * @param array $userData User data to update
+     * @return bool Success or failure
+     */
+    public function update($userId, $userData)
+    {
+        // Add updated_at timestamp
+        $userData['updated_at'] = date('Y-m-d H:i:s');
+
+        // Build SET clause for SQL
+        $setClause = '';
+        foreach ($userData as $column => $value) {
+            $setClause .= "$column = :$column, ";
+        }
+        $setClause = rtrim($setClause, ', ');
+
+        $sql = "UPDATE users SET $setClause WHERE user_id = :user_id";
+        $userData['user_id'] = $userId;
+
+        try {
+            $stmt = $this->db->query($sql, $userData);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error updating user: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update user password
+     * 
+     * @param int $userId User ID
+     * @param string $newPassword New password (will be hashed)
+     * @return bool Success or failure
+     */
+    public function updatePassword($userId, $newPassword)
+    {
+        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE users SET 
+                password_hash = :password_hash, 
+                updated_at = :updated_at 
+                WHERE user_id = :user_id";
+
+        $params = [
+            'password_hash' => $passwordHash,
+            'updated_at' => date('Y-m-d H:i:s'),
+            'user_id' => $userId
+        ];
+
+        try {
+            $stmt = $this->db->query($sql, $params);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error updating password: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all users for a company
+     * 
+     * @param int $companyId Company ID
+     * @return array Array of users
+     */
+    public function getAllByCompany($companyId)
+    {
+        $sql = "SELECT * FROM users WHERE company_id = :company_id ORDER BY username";
+        $stmt = $this->db->query($sql, ['company_id' => $companyId]);
+        
+        return $stmt->fetchAll();
+    }
 }

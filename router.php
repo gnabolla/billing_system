@@ -21,6 +21,12 @@ $routes = [
   "/dashboard" => "controllers/dashboard.php",
   "/logout" => "controllers/logout.php",
   
+  // User profile routes
+  "/profile" => "controllers/profile.php",
+  
+  // Company settings
+  "/company-settings" => "controllers/company-settings.php",
+  
   // Subscriber routes
   "/subscribers" => "controllers/subscribers.php",
   "/subscribers/create" => "controllers/subscribers/create.php",
