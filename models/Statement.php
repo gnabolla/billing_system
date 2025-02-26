@@ -120,7 +120,7 @@ class Statement
                 FROM statements s
                 JOIN subscribers sub ON s.subscriber_id = sub.subscriber_id
                 WHERE $whereClause";
-                
+
         $stmt = $this->db->query($sql, $params);
         $result = $stmt->fetch();
 
@@ -222,7 +222,7 @@ class Statement
             }
 
             // Prepare statement data (exclude items)
-            $statementData = array_filter($data, function($key) {
+            $statementData = array_filter($data, function ($key) {
                 return $key !== 'items';
             }, ARRAY_FILTER_USE_KEY);
 
@@ -232,7 +232,7 @@ class Statement
 
             $sql = "INSERT INTO statements ($columns) VALUES ($placeholders)";
             $stmt = $this->db->query($sql, $statementData);
-            
+
             $statementId = $this->db->connection->lastInsertId();
 
             // Insert statement items if provided
@@ -299,28 +299,56 @@ class Statement
      * @param int $companyId Company ID (for security)
      * @return bool Success or failure
      */
-    public function updateUnpaidAmount($id, $unpaidAmount, $companyId)
+    // In models/Statement.php, update the method:
+    public function updateUnpaidAmount($id, $newUnpaidAmount, $companyId)
     {
-        $sql = "UPDATE statements 
+        // Start transaction
+        $this->db->connection->beginTransaction();
+
+        try {
+            // Update the unpaid amount
+            $sql = "UPDATE statements 
                 SET unpaid_amount = :unpaid_amount, updated_at = :updated_at 
                 WHERE statement_id = :id AND company_id = :company_id";
 
-        try {
             $stmt = $this->db->query($sql, [
-                'unpaid_amount' => $unpaidAmount,
+                'unpaid_amount' => $newUnpaidAmount,
                 'updated_at' => date('Y-m-d H:i:s'),
                 'id' => $id,
                 'company_id' => $companyId
             ]);
 
-            // Update status based on unpaid amount
-            if ($stmt->rowCount() > 0) {
-                $status = ($unpaidAmount <= 0) ? 'Paid' : (($unpaidAmount < $this->getTotalAmount($id)) ? 'Partially Paid' : 'Unpaid');
-                $this->updateStatus($id, $status, $companyId);
+            // Determine the new status based on the unpaid amount
+            $status = 'Unpaid';
+            if ($newUnpaidAmount <= 0) {
+                $status = 'Paid';
+            } else {
+                $sql = "SELECT total_amount FROM statements WHERE statement_id = :id LIMIT 1";
+                $result = $this->db->query($sql, ['id' => $id])->fetch();
+
+                if ($result && $newUnpaidAmount < $result['total_amount']) {
+                    $status = 'Partially Paid';
+                }
+
+                // Check if overdue (due date has passed and still unpaid)
+                $sql = "SELECT due_date FROM statements WHERE statement_id = :id LIMIT 1";
+                $result = $this->db->query($sql, ['id' => $id])->fetch();
+
+                if ($result && strtotime($result['due_date']) < time() && $newUnpaidAmount > 0) {
+                    $status = 'Overdue';
+                }
             }
 
-            return $stmt->rowCount() > 0;
+            // Update the status
+            $this->updateStatus($id, $status, $companyId);
+
+            // Commit transaction
+            $this->db->connection->commit();
+
+            return true;
         } catch (PDOException $e) {
+            // Rollback transaction on error
+            $this->db->connection->rollBack();
             error_log("Error updating unpaid amount: " . $e->getMessage());
             return false;
         }

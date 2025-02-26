@@ -27,34 +27,34 @@
                             <?= $_SESSION['flash_message'] ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <?php 
-                            // Clear the flash message
-                            unset($_SESSION['flash_message']);
-                            unset($_SESSION['flash_message_type']);
+                        <?php
+                        // Clear the flash message
+                        unset($_SESSION['flash_message']);
+                        unset($_SESSION['flash_message_type']);
                         ?>
                     <?php endif; ?>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <h5 class="border-bottom pb-2">Statement Information</h5>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Statement #</label>
                                 <div class="col-sm-8">
                                     <p class="form-control-plaintext fw-bold"><?= htmlspecialchars($statement['statement_no']) ?></p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Billing Period</label>
                                 <div class="col-sm-8">
                                     <p class="form-control-plaintext">
-                                        <?= date('M d, Y', strtotime($statement['bill_period_start'])) ?> - 
+                                        <?= date('M d, Y', strtotime($statement['bill_period_start'])) ?> -
                                         <?= date('M d, Y', strtotime($statement['bill_period_end'])) ?>
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Due Date</label>
                                 <div class="col-sm-8">
@@ -66,7 +66,7 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Status</label>
                                 <div class="col-sm-8">
@@ -84,17 +84,17 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <h5 class="border-bottom pb-2">Subscriber Information</h5>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Account #</label>
                                 <div class="col-sm-8">
                                     <p class="form-control-plaintext"><?= htmlspecialchars($statement['account_no']) ?></p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Name</label>
                                 <div class="col-sm-8">
@@ -107,14 +107,14 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Address</label>
                                 <div class="col-sm-8">
                                     <p class="form-control-plaintext"><?= nl2br(htmlspecialchars($statement['address'])) ?></p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Contact</label>
                                 <div class="col-sm-8">
@@ -130,11 +130,11 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="row mt-4">
                         <div class="col-md-12">
                             <h5 class="border-bottom pb-2">Statement Items</h5>
-                            
+
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead class="table-light">
@@ -197,7 +197,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <?php if (!empty($statement['notes'])): ?>
                         <div class="row mt-3">
                             <div class="col-md-12">
@@ -206,16 +206,67 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    
+
+                    <!-- Replace the payment history placeholder section with: -->
                     <div class="row mt-3">
                         <div class="col-md-12">
                             <h5 class="border-bottom pb-2">Payment History</h5>
-                            
-                            <!-- Placeholder for payment history - will be implemented later -->
-                            <p class="text-muted">Payment history will be available soon.</p>
+
+                            <?php if (empty($paymentHistory)): ?>
+                                <p class="text-muted">No payments have been recorded for this statement.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>OR #</th>
+                                                <th>Payment Date</th>
+                                                <th>Amount</th>
+                                                <th>Method</th>
+                                                <th>Status</th>
+                                                <th>Recorded By</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($paymentHistory as $payment): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($payment['or_no']) ?></td>
+                                                    <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
+                                                    <td>$<?= number_format($payment['paid_amount'], 2) ?></td>
+                                                    <td><?= htmlspecialchars($payment['payment_method']) ?></td>
+                                                    <td>
+                                                        <?php if ($payment['payment_status'] === 'Completed'): ?>
+                                                            <span class="badge bg-success">Completed</span>
+                                                        <?php elseif ($payment['payment_status'] === 'Pending'): ?>
+                                                            <span class="badge bg-warning text-dark">Pending</span>
+                                                        <?php elseif ($payment['payment_status'] === 'Cancelled'): ?>
+                                                            <span class="badge bg-danger">Cancelled</span>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary"><?= htmlspecialchars($payment['payment_status']) ?></span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if (!empty($payment['created_by_first_name'])): ?>
+                                                            <?= htmlspecialchars($payment['created_by_first_name'] . ' ' . $payment['created_by_last_name']) ?>
+                                                        <?php else: ?>
+                                                            <em class="text-muted">System</em>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?= url('payments/view?id=' . $payment['payment_id']) ?>" class="btn btn-sm btn-info">
+                                                            <i class="bi bi-eye"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    
+
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a href="<?= url('statements') ?>" class="btn btn-outline-secondary me-md-2">Back to Statements</a>
                         <a href="#" class="btn btn-outline-primary me-md-2" onclick="window.print();">

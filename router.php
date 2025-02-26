@@ -49,7 +49,8 @@ $routes = [
   // Payment routes
   "/payments" => "controllers/payments.php",
   "/payments/create" => "controllers/payments/create.php",
-  "/payments/view" => "controllers/payments/view.php"
+  "/payments/view" => "controllers/payments/view.php",
+  "/payments/receipt" => "controllers/payments/receipt.php",
 ];
 
 function routesToController(string $uri, array $routes): void

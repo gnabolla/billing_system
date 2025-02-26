@@ -10,6 +10,6 @@ return [
         'password' => 'StrongPassword123!',
     ],
     'app' => [
-        'base_path' => 'http://174.138.24.254/billing'
+        'base_path' => '/billing'
     ]
 ];

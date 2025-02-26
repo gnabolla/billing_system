@@ -134,7 +134,7 @@ class Payment
                 JOIN statements s ON p.statement_id = s.statement_id
                 JOIN subscribers sub ON s.subscriber_id = sub.subscriber_id
                 WHERE $whereClause";
-                
+
         $stmt = $this->db->query($sql, $params);
         $result = $stmt->fetch();
 
@@ -205,6 +205,7 @@ class Payment
      * @param array $data Payment data
      * @return int|bool The ID of the new payment or false on failure
      */
+    // In models/Payment.php, update the create method:
     public function create($data)
     {
         // Begin transaction
@@ -243,26 +244,30 @@ class Payment
 
             $sql = "INSERT INTO payments ($columns) VALUES ($placeholders)";
             $stmt = $this->db->query($sql, $data);
-            
+
             $paymentId = $this->db->connection->lastInsertId();
 
             // Update statement unpaid amount
             $statementModel = new Statement($this->db);
             $statement = $statementModel->getById($data['statement_id'], $data['company_id']);
-            
+
             if ($statement) {
                 $paidAmount = $data['paid_amount'];
                 $unpaidAmount = $statement['unpaid_amount'];
                 $newUnpaidAmount = max(0, $unpaidAmount - $paidAmount);
-                
-                $statementModel->updateUnpaidAmount($data['statement_id'], $newUnpaidAmount, $data['company_id']);
+
+                $updated = $statementModel->updateUnpaidAmount($data['statement_id'], $newUnpaidAmount, $data['company_id']);
+
+                if (!$updated) {
+                    throw new Exception("Failed to update statement unpaid amount");
+                }
             }
 
             // Commit the transaction
             $this->db->connection->commit();
 
             return $paymentId;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             // Rollback the transaction on error
             $this->db->connection->rollBack();
             error_log("Error creating payment: " . $e->getMessage());
@@ -308,9 +313,11 @@ class Payment
      */
     public function getForStatement($statementId, $companyId)
     {
-        $sql = "SELECT * FROM payments 
-                WHERE statement_id = :statement_id AND company_id = :company_id 
-                ORDER BY payment_date DESC, created_at DESC";
+        $sql = "SELECT p.*, u.first_name as created_by_first_name, u.last_name as created_by_last_name 
+                FROM payments p
+                LEFT JOIN users u ON p.created_by = u.user_id
+                WHERE p.statement_id = :statement_id AND p.company_id = :company_id 
+                ORDER BY p.payment_date DESC, p.created_at DESC";
 
         $stmt = $this->db->query($sql, [
             'statement_id' => $statementId,

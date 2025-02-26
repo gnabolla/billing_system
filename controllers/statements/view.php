@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../Database.php';
 require_once __DIR__ . '/../../services/Auth.php';
 require_once __DIR__ . '/../../models/Statement.php';
 require_once __DIR__ . '/../../functions.php';
+require_once __DIR__ . '/../../models/Payment.php';
 
 $config = require __DIR__ . '/../../config.php';
 
@@ -50,6 +51,10 @@ if (!$statement) {
 
 // Get statement items
 $statementItems = $statementModel->getItems($statementId);
+
+// Get payment history for this statement
+$paymentModel = new Payment($db);
+$paymentHistory = $paymentModel->getForStatement($statementId, $companyId);
 
 // Load view
 require __DIR__ . '/../../views/statements/view.view.php';
