@@ -207,9 +207,6 @@ class Payment
      */
     public function create($data)
     {
-        // Include Statement model
-        require_once __DIR__ . '/Statement.php';
-
         // Begin transaction
         $this->db->connection->beginTransaction();
 
@@ -240,9 +237,6 @@ class Payment
                 $data['adv_payment'] = 0;
             }
 
-            // Add debug logging
-            error_log("Payment data before insertion: " . print_r($data, true));
-
             // Build the SQL query for payment
             $columns = implode(', ', array_keys($data));
             $placeholders = ':' . implode(', :', array_keys($data));
@@ -253,24 +247,54 @@ class Payment
             $paymentId = $this->db->connection->lastInsertId();
 
             // Update statement unpaid amount
-            $statementModel = new Statement($this->db);
-            $statement = $statementModel->getById($data['statement_id'], $data['company_id']);
+            // First, get the statement to verify it exists and get current unpaid amount
+            $sql = "SELECT * FROM statements WHERE statement_id = :statement_id AND company_id = :company_id LIMIT 1";
+            $stmt = $this->db->query($sql, [
+                'statement_id' => $data['statement_id'],
+                'company_id' => $data['company_id']
+            ]);
+            $statement = $stmt->fetch();
 
-            if ($statement) {
-                $paidAmount = $data['paid_amount'];
-                $unpaidAmount = $statement['unpaid_amount'];
-                $newUnpaidAmount = max(0, $unpaidAmount - $paidAmount);
-
-                error_log("Updating statement ID: {$data['statement_id']} from unpaid amount: {$unpaidAmount} to new unpaid amount: {$newUnpaidAmount}");
-
-                $updated = $statementModel->updateUnpaidAmount($data['statement_id'], $newUnpaidAmount, $data['company_id']);
-
-                if (!$updated) {
-                    throw new Exception("Failed to update statement unpaid amount");
-                }
-            } else {
-                error_log("Statement not found for ID: {$data['statement_id']} and company ID: {$data['company_id']}");
+            if (!$statement) {
                 throw new Exception("Statement not found");
+            }
+
+            // Calculate new unpaid amount
+            $paidAmount = floatval($data['paid_amount']);
+            $unpaidAmount = floatval($statement['unpaid_amount']);
+            $newUnpaidAmount = max(0, $unpaidAmount - $paidAmount);
+
+            // Determine new status
+            $status = 'Unpaid';
+            if ($newUnpaidAmount <= 0) {
+                $status = 'Paid';
+            } else if ($newUnpaidAmount < $statement['total_amount']) {
+                $status = 'Partially Paid';
+            }
+
+            // Check if overdue
+            if ($newUnpaidAmount > 0 && strtotime($statement['due_date']) < time()) {
+                $status = 'Overdue';
+            }
+
+            // Update statement unpaid amount and status
+            $sql = "UPDATE statements 
+                SET unpaid_amount = :unpaid_amount, 
+                    status = :status, 
+                    updated_at = :updated_at 
+                WHERE statement_id = :statement_id 
+                AND company_id = :company_id";
+
+            $stmt = $this->db->query($sql, [
+                'unpaid_amount' => $newUnpaidAmount,
+                'status' => $status,
+                'updated_at' => date('Y-m-d H:i:s'),
+                'statement_id' => $data['statement_id'],
+                'company_id' => $data['company_id']
+            ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new Exception("Failed to update statement");
             }
 
             // Commit the transaction

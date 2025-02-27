@@ -305,17 +305,32 @@ class Statement
         $this->db->connection->beginTransaction();
 
         try {
+            // First verify statement exists and belongs to this company
+            $sql = "SELECT * FROM statements WHERE statement_id = :id AND company_id = :company_id LIMIT 1";
+            $stmt = $this->db->query($sql, [
+                'id' => $id,
+                'company_id' => $companyId
+            ]);
+
+            $statement = $stmt->fetch();
+            if (!$statement) {
+                error_log("Statement not found for ID: $id and company ID: $companyId");
+                throw new Exception("Statement not found");
+            }
+
             // Update the unpaid amount
             $sql = "UPDATE statements 
                 SET unpaid_amount = :unpaid_amount, updated_at = :updated_at 
                 WHERE statement_id = :id AND company_id = :company_id";
 
-            $stmt = $this->db->query($sql, [
+            $params = [
                 'unpaid_amount' => $newUnpaidAmount,
                 'updated_at' => date('Y-m-d H:i:s'),
                 'id' => $id,
                 'company_id' => $companyId
-            ]);
+            ];
+
+            $stmt = $this->db->query($sql, $params);
 
             if ($stmt->rowCount() === 0) {
                 error_log("No rows updated when updating unpaid amount for statement ID: $id");
@@ -327,24 +342,28 @@ class Statement
             if ($newUnpaidAmount <= 0) {
                 $status = 'Paid';
             } else {
-                $sql = "SELECT total_amount FROM statements WHERE statement_id = :id LIMIT 1";
-                $result = $this->db->query($sql, ['id' => $id])->fetch();
-
-                if ($result && $newUnpaidAmount < $result['total_amount']) {
+                $totalAmount = $statement['total_amount'];
+                if ($newUnpaidAmount < $totalAmount) {
                     $status = 'Partially Paid';
                 }
 
                 // Check if overdue (due date has passed and still unpaid)
-                $sql = "SELECT due_date FROM statements WHERE statement_id = :id LIMIT 1";
-                $result = $this->db->query($sql, ['id' => $id])->fetch();
-
-                if ($result && strtotime($result['due_date']) < time() && $newUnpaidAmount > 0) {
+                if (strtotime($statement['due_date']) < time()) {
                     $status = 'Overdue';
                 }
             }
 
             // Update the status
-            $this->updateStatus($id, $status, $companyId);
+            $sql = "UPDATE statements 
+                SET status = :status, updated_at = :updated_at 
+                WHERE statement_id = :id AND company_id = :company_id";
+
+            $stmt = $this->db->query($sql, [
+                'status' => $status,
+                'updated_at' => date('Y-m-d H:i:s'),
+                'id' => $id,
+                'company_id' => $companyId
+            ]);
 
             // Commit transaction
             $this->db->connection->commit();
