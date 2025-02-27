@@ -20,18 +20,18 @@
                             <?= htmlspecialchars($errors['general']) ?>
                         </div>
                     <?php endif; ?>
-                    
+
                     <form method="POST" action="<?= url('payments/create' . ($statementId ? '?statement_id=' . $statementId : '')) ?>" id="paymentForm">
                         <!-- Statement Selection Section -->
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <label for="statement_id" class="form-label">Statement *</label>
-                                
+
                                 <?php if ($statement): ?>
                                     <input type="hidden" name="statement_id" value="<?= $statement['statement_id'] ?>">
                                     <div class="alert alert-info">
                                         <strong>Selected Statement:</strong> <?= htmlspecialchars($statement['statement_no']) ?><br>
-                                        <strong>Subscriber:</strong> 
+                                        <strong>Subscriber:</strong>
                                         <?php if (!empty($statement['company_name'])): ?>
                                             <?= htmlspecialchars($statement['company_name']) ?>
                                         <?php else: ?>
@@ -43,13 +43,13 @@
                                         <strong>Unpaid Amount:</strong> $<?= number_format($statement['unpaid_amount'], 2) ?>
                                     </div>
                                 <?php else: ?>
-                                    <select class="form-select <?= isset($errors['statement_id']) ? 'is-invalid' : '' ?>" 
+                                    <select class="form-select <?= isset($errors['statement_id']) ? 'is-invalid' : '' ?>"
                                         id="statement_id" name="statement_id" required>
                                         <option value="">-- Select Statement --</option>
                                         <?php foreach ($unpaidStatements as $stmt): ?>
-                                            <option value="<?= $stmt['statement_id'] ?>" <?= $formData['statement_id'] == $stmt['statement_id'] ? 'selected' : '' ?> 
+                                            <option value="<?= $stmt['statement_id'] ?>" <?= $formData['statement_id'] == $stmt['statement_id'] ? 'selected' : '' ?>
                                                 data-unpaid="<?= $stmt['unpaid_amount'] ?>">
-                                                <?= htmlspecialchars($stmt['statement_no']) ?> - 
+                                                <?= htmlspecialchars($stmt['statement_no']) ?> -
                                                 <?php if (!empty($stmt['company_name'])): ?>
                                                     <?= htmlspecialchars($stmt['company_name']) ?>
                                                 <?php else: ?>
@@ -67,14 +67,14 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        
+
                         <!-- Payment Details Section -->
                         <h5 class="mb-3">Payment Details</h5>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="or_no" class="form-label">OR Number</label>
-                                <input type="text" class="form-control <?= isset($errors['or_no']) ? 'is-invalid' : '' ?>" 
-                                    id="or_no" name="or_no" value="<?= htmlspecialchars($formData['or_no']) ?>" 
+                                <input type="text" class="form-control <?= isset($errors['or_no']) ? 'is-invalid' : '' ?>"
+                                    id="or_no" name="or_no" value="<?= htmlspecialchars($formData['or_no']) ?>"
                                     placeholder="Leave blank for auto-generated">
                                 <?php if (isset($errors['or_no'])): ?>
                                     <div class="invalid-feedback">
@@ -85,7 +85,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="or_date" class="form-label">OR Date</label>
-                                <input type="date" class="form-control <?= isset($errors['or_date']) ? 'is-invalid' : '' ?>" 
+                                <input type="date" class="form-control <?= isset($errors['or_date']) ? 'is-invalid' : '' ?>"
                                     id="or_date" name="or_date" value="<?= htmlspecialchars($formData['or_date']) ?>">
                                 <?php if (isset($errors['or_date'])): ?>
                                     <div class="invalid-feedback">
@@ -94,11 +94,11 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="payment_date" class="form-label">Payment Date *</label>
-                                <input type="date" class="form-control <?= isset($errors['payment_date']) ? 'is-invalid' : '' ?>" 
+                                <input type="date" class="form-control <?= isset($errors['payment_date']) ? 'is-invalid' : '' ?>"
                                     id="payment_date" name="payment_date" value="<?= htmlspecialchars($formData['payment_date']) ?>" required>
                                 <?php if (isset($errors['payment_date'])): ?>
                                     <div class="invalid-feedback">
@@ -108,7 +108,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="payment_method" class="form-label">Payment Method *</label>
-                                <select class="form-select <?= isset($errors['payment_method']) ? 'is-invalid' : '' ?>" 
+                                <select class="form-select <?= isset($errors['payment_method']) ? 'is-invalid' : '' ?>"
                                     id="payment_method" name="payment_method" required>
                                     <option value="Cash" <?= $formData['payment_method'] === 'Cash' ? 'selected' : '' ?>>Cash</option>
                                     <option value="Check" <?= $formData['payment_method'] === 'Check' ? 'selected' : '' ?>>Check</option>
@@ -123,13 +123,13 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="paid_amount" class="form-label">Amount Paid *</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['paid_amount']) ? 'is-invalid' : '' ?>" 
+                                    <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['paid_amount']) ? 'is-invalid' : '' ?>"
                                         id="paid_amount" name="paid_amount" value="<?= htmlspecialchars($formData['paid_amount']) ?>" required>
                                     <?php if (isset($errors['paid_amount'])): ?>
                                         <div class="invalid-feedback">
@@ -142,7 +142,7 @@
                                 <label for="adv_payment" class="form-label">Advance Payment</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['adv_payment']) ? 'is-invalid' : '' ?>" 
+                                    <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['adv_payment']) ? 'is-invalid' : '' ?>"
                                         id="adv_payment" name="adv_payment" value="<?= htmlspecialchars($formData['adv_payment']) ?>">
                                     <?php if (isset($errors['adv_payment'])): ?>
                                         <div class="invalid-feedback">
@@ -153,12 +153,12 @@
                                 <div class="form-text">Optional: Amount paid in advance for future bills</div>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control" id="notes" name="notes" rows="3"><?= htmlspecialchars($formData['notes']) ?></textarea>
                         </div>
-                        
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="<?= url('payments') ?>" class="btn btn-outline-secondary me-md-2">Cancel</a>
                             <button type="submit" class="btn btn-success">Record Payment</button>
@@ -169,13 +169,19 @@
         </div>
     </div>
 </div>
-
+<?php
+// Temporary error logging for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Handle statement selection to update paid amount
         const statementSelect = document.getElementById('statement_id');
         const paidAmountInput = document.getElementById('paid_amount');
-        
+        const paymentForm = document.getElementById('paymentForm');
+
         if (statementSelect) {
             statementSelect.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
@@ -187,6 +193,28 @@
                 } else {
                     paidAmountInput.value = '0.00';
                 }
+            });
+        }
+
+        // Form validation
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                const statementId = document.querySelector('input[name="statement_id"], select[name="statement_id"]').value;
+                const paidAmount = parseFloat(paidAmountInput.value);
+
+                if (!statementId) {
+                    e.preventDefault();
+                    alert('Please select a statement');
+                    return false;
+                }
+
+                if (isNaN(paidAmount) || paidAmount <= 0) {
+                    e.preventDefault();
+                    alert('Please enter a valid payment amount greater than zero');
+                    return false;
+                }
+
+                return true;
             });
         }
     });

@@ -205,9 +205,11 @@ class Payment
      * @param array $data Payment data
      * @return int|bool The ID of the new payment or false on failure
      */
-    // In models/Payment.php, update the create method:
     public function create($data)
     {
+        // Include Statement model
+        require_once __DIR__ . '/Statement.php';
+
         // Begin transaction
         $this->db->connection->beginTransaction();
 
@@ -238,6 +240,9 @@ class Payment
                 $data['adv_payment'] = 0;
             }
 
+            // Add debug logging
+            error_log("Payment data before insertion: " . print_r($data, true));
+
             // Build the SQL query for payment
             $columns = implode(', ', array_keys($data));
             $placeholders = ':' . implode(', :', array_keys($data));
@@ -256,11 +261,16 @@ class Payment
                 $unpaidAmount = $statement['unpaid_amount'];
                 $newUnpaidAmount = max(0, $unpaidAmount - $paidAmount);
 
+                error_log("Updating statement ID: {$data['statement_id']} from unpaid amount: {$unpaidAmount} to new unpaid amount: {$newUnpaidAmount}");
+
                 $updated = $statementModel->updateUnpaidAmount($data['statement_id'], $newUnpaidAmount, $data['company_id']);
 
                 if (!$updated) {
                     throw new Exception("Failed to update statement unpaid amount");
                 }
+            } else {
+                error_log("Statement not found for ID: {$data['statement_id']} and company ID: {$data['company_id']}");
+                throw new Exception("Statement not found");
             }
 
             // Commit the transaction
@@ -271,6 +281,7 @@ class Payment
             // Rollback the transaction on error
             $this->db->connection->rollBack();
             error_log("Error creating payment: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             return false;
         }
     }

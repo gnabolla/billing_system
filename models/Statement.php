@@ -295,11 +295,10 @@ class Statement
      * Update statement unpaid amount
      * 
      * @param int $id Statement ID
-     * @param float $unpaidAmount New unpaid amount
+     * @param float $newUnpaidAmount New unpaid amount
      * @param int $companyId Company ID (for security)
      * @return bool Success or failure
      */
-    // In models/Statement.php, update the method:
     public function updateUnpaidAmount($id, $newUnpaidAmount, $companyId)
     {
         // Start transaction
@@ -317,6 +316,11 @@ class Statement
                 'id' => $id,
                 'company_id' => $companyId
             ]);
+
+            if ($stmt->rowCount() === 0) {
+                error_log("No rows updated when updating unpaid amount for statement ID: $id");
+                throw new Exception("Failed to update statement. No matching record found.");
+            }
 
             // Determine the new status based on the unpaid amount
             $status = 'Unpaid';
@@ -350,6 +354,11 @@ class Statement
             // Rollback transaction on error
             $this->db->connection->rollBack();
             error_log("Error updating unpaid amount: " . $e->getMessage());
+            return false;
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            $this->db->connection->rollBack();
+            error_log("Error in update process: " . $e->getMessage());
             return false;
         }
     }
