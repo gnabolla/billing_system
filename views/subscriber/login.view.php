@@ -4,21 +4,8 @@
     <div class="row justify-content-center mt-5">
         <div class="col-md-6">
             <div class="card">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php include __DIR__ . '/../partials/foot.php' ?><div class="card-header bg-primary text-white">
-                    </form>
-
-                    <div class="mt-3 text-center">
-                        <p>Forgot your password? <a href="<?= url('subscriber/forgot-password') ?>">Reset it here</a></p>
-                        <hr>
-                        <p>Back to <a href="<?= url('/') ?>">Main Website</a></p>
-                    </div>
-                <h3 class="text-center mb-0">Subscriber Login</h3>
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Subscriber Login</h3>
                 </div>
                 <div class="card-body">
                     <?php if (!empty($error)): ?>
@@ -40,3 +27,17 @@
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <p>Forgot your password? <a href="<?= url('subscriber/forgot-password') ?>">Reset it here</a></p>
+                        <hr>
+                        <p>Back to <a href="<?= url('/') ?>">Main Website</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include __DIR__ . '/../partials/foot.php' ?>

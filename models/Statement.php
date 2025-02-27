@@ -400,22 +400,29 @@ class Statement
     /**
      * Get statements for a specific subscriber
      * 
-     * @param int $subscriberId Subscriber ID
+     * @param int $subscriberId The subscriber ID
      * @param int $companyId Company ID (for security)
-     * @param int $limit Number of results to return
+     * @param int $limit Optional limit on number of records to return
      * @return array Array of statements
      */
-    public function getForSubscriber($subscriberId, $companyId, $limit = 10)
+    public function getForSubscriber($subscriberId, $companyId, $limit = null)
     {
         $sql = "SELECT * FROM statements 
-                WHERE subscriber_id = :subscriber_id AND company_id = :company_id 
-                ORDER BY created_at DESC LIMIT :limit";
+            WHERE subscriber_id = :subscriber_id 
+            AND company_id = :company_id 
+            ORDER BY due_date DESC";
 
-        $stmt = $this->db->query($sql, [
+        $params = [
             'subscriber_id' => $subscriberId,
-            'company_id' => $companyId,
-            'limit' => $limit
-        ]);
+            'company_id' => $companyId
+        ];
+
+        // Add LIMIT clause if specified
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int)$limit;
+        }
+
+        $stmt = $this->db->query($sql, $params);
 
         return $stmt->fetchAll();
     }

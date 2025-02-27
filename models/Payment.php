@@ -387,25 +387,36 @@ class Payment
     /**
      * Get payments for a specific subscriber
      * 
-     * @param int $subscriberId Subscriber ID
+     * @param int $subscriberId The subscriber ID
      * @param int $companyId Company ID (for security)
-     * @param int $limit Number of results to return
+     * @param int $limit Optional limit on number of records to return
      * @return array Array of payments
      */
-    public function getForSubscriber($subscriberId, $companyId, $limit = 10)
+    public function getForSubscriber($subscriberId, $companyId, $limit = null)
     {
+        // The correct SQL joins payments to statements based on statement_id,
+        // and then filters by statements.subscriber_id
         $sql = "SELECT p.*, s.statement_no 
-                FROM payments p
-                JOIN statements s ON p.statement_id = s.statement_id
-                WHERE s.subscriber_id = :subscriber_id AND p.company_id = :company_id 
-                ORDER BY p.payment_date DESC, p.created_at DESC
-                LIMIT :limit";
+            FROM payments p
+            LEFT JOIN statements s ON p.statement_id = s.statement_id
+            WHERE s.subscriber_id = :subscriber_id 
+            AND p.company_id = :company_id 
+            ORDER BY p.payment_date DESC";
 
-        $stmt = $this->db->query($sql, [
+        // Parameters for the prepared statement
+        $params = [
             'subscriber_id' => $subscriberId,
-            'company_id' => $companyId,
-            'limit' => $limit
-        ]);
+            'company_id' => $companyId
+        ];
+
+        // If limit is provided, append it directly to the SQL string
+        if ($limit !== null && is_numeric($limit)) {
+            $limitValue = (int)$limit;  // Force integer conversion
+            $sql .= " LIMIT {$limitValue}";  // Directly embed as an integer
+        }
+
+        // Execute the query with the parameters
+        $stmt = $this->db->query($sql, $params);
 
         return $stmt->fetchAll();
     }
