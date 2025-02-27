@@ -57,6 +57,19 @@ $routes = [
   "/payments/create" => "controllers/payments/create.php",
   "/payments/view" => "controllers/payments/view.php",
   "/payments/receipt" => "controllers/payments/receipt.php",
+  
+  // Subscriber Portal routes
+  "/subscriber/login" => "controllers/subscriber/login.php",
+  "/subscriber/logout" => "controllers/subscriber/logout.php",
+  "/subscriber/forgot-password" => "controllers/subscriber/forgot-password.php",
+  "/subscriber/reset-password" => "controllers/subscriber/reset-password.php",
+  "/subscriber/dashboard" => "controllers/subscriber/dashboard.php",
+  "/subscriber/profile" => "controllers/subscriber/profile.php",
+  "/subscriber/statements" => "controllers/subscriber/statements.php",
+  "/subscriber/statement" => "controllers/subscriber/statement.php",
+  "/subscriber/payments" => "controllers/subscriber/payments.php",
+  "/subscriber/payment" => "controllers/subscriber/payment.php",
+  "/subscriber/plans" => "controllers/subscriber/plans.php",
 ];
 
 function routesToController(string $uri, array $routes): void
