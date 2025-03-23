@@ -20,13 +20,13 @@
                             <?= $_SESSION['flash_message'] ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <?php 
-                            // Clear the flash message
-                            unset($_SESSION['flash_message']);
-                            unset($_SESSION['flash_message_type']);
+                        <?php
+                        // Clear the flash message
+                        unset($_SESSION['flash_message']);
+                        unset($_SESSION['flash_message_type']);
                         ?>
                     <?php endif; ?>
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <form action="<?= url('statements') ?>" method="GET" class="d-flex">
@@ -44,7 +44,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <?php if (empty($statements)): ?>
                         <div class="alert alert-info">
                             No statements found. <a href="<?= url('statements/create') ?>">Create your first statement</a>.
@@ -114,16 +114,16 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <!-- Pagination -->
                         <?php if ($totalPages > 1): ?>
                             <nav aria-label="Statement pagination">
                                 <ul class="pagination justify-content-center">
                                     <?php if ($page > 1): ?>
                                         <li class="page-item">
-                                            <a class="page-link" href="<?= url('statements?page=' . ($page - 1) . 
-                                                (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') . 
-                                                (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
+                                            <a class="page-link" href="<?= url('statements?page=' . ($page - 1) .
+                                                                            (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') .
+                                                                            (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
                                                 Previous
                                             </a>
                                         </li>
@@ -132,22 +132,61 @@
                                             <span class="page-link">Previous</span>
                                         </li>
                                     <?php endif; ?>
-                                    
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+
+                                    <?php
+                                    // Calculate range of pages to show
+                                    $range = 2; // Number of pages to show on each side of current page
+                                    $rangeStart = max(1, $page - $range);
+                                    $rangeEnd = min($totalPages, $page + $range);
+
+                                    // First page
+                                    if ($rangeStart > 1): ?>
+                                        <li class="page-item">
+                                            <a class="page-link" href="<?= url('statements?page=1' .
+                                                                            (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') .
+                                                                            (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
+                                                1
+                                            </a>
+                                        </li>
+                                        <?php if ($rangeStart > 2): ?>
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        <?php endif;
+                                    endif;
+
+                                    // Pages in range
+                                    for ($i = $rangeStart; $i <= $rangeEnd; $i++): ?>
                                         <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                                            <a class="page-link" href="<?= url('statements?page=' . $i . 
-                                                (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') . 
-                                                (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
+                                            <a class="page-link" href="<?= url('statements?page=' . $i .
+                                                                            (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') .
+                                                                            (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
                                                 <?= $i ?>
                                             </a>
                                         </li>
-                                    <?php endfor; ?>
-                                    
+                                        <?php endfor;
+
+                                    // Last page
+                                    if ($rangeEnd < $totalPages):
+                                        if ($rangeEnd < $totalPages - 1): ?>
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        <?php endif; ?>
+                                        <li class="page-item">
+                                            <a class="page-link" href="<?= url('statements?page=' . $totalPages .
+                                                                            (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') .
+                                                                            (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
+                                                <?= $totalPages ?>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
                                     <?php if ($page < $totalPages): ?>
                                         <li class="page-item">
-                                            <a class="page-link" href="<?= url('statements?page=' . ($page + 1) . 
-                                                (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') . 
-                                                (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
+                                            <a class="page-link" href="<?= url('statements?page=' . ($page + 1) .
+                                                                            (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') .
+                                                                            (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : '')) ?>">
                                                 Next
                                             </a>
                                         </li>
@@ -171,18 +210,18 @@
     document.getElementById('statusFilter').addEventListener('change', function() {
         const currentUrl = new URL(window.location.href);
         const status = this.value;
-        
+
         if (status) {
             currentUrl.searchParams.set('status', status);
         } else {
             currentUrl.searchParams.delete('status');
         }
-        
+
         // Keep the current page and search parameters
         if (currentUrl.searchParams.has('page')) {
             currentUrl.searchParams.set('page', 1); // Reset to page 1 when changing filters
         }
-        
+
         window.location.href = currentUrl.toString();
     });
 </script>
