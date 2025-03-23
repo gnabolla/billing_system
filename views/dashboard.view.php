@@ -83,7 +83,7 @@
                                                                     <?= htmlspecialchars($payment['first_name'] . ' ' . $payment['last_name']) ?>
                                                                 <?php endif; ?>
                                                             </td>
-                                                            <td>$<?= number_format($payment['paid_amount'], 2) ?></td>
+                                                            <td>₱<?= number_format($payment['paid_amount'], 2) ?></td>
                                                             <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
                                                             <td>
                                                                 <?php if ($payment['payment_status'] === 'Completed'): ?>
@@ -140,7 +140,7 @@
                                                                     <?= htmlspecialchars($statement['first_name'] . ' ' . $statement['last_name']) ?>
                                                                 <?php endif; ?>
                                                             </td>
-                                                            <td>$<?= number_format($statement['total_amount'], 2) ?></td>
+                                                            <td>₱<?= number_format($statement['total_amount'], 2) ?></td>
                                                             <td><?= date('M d, Y', strtotime($statement['due_date'])) ?></td>
                                                             <td>
                                                                 <?php if ($statement['status'] === 'Paid'): ?>

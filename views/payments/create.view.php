@@ -39,8 +39,8 @@
                                         <?php endif; ?>
                                         <br>
                                         <strong>Account No:</strong> <?= htmlspecialchars($statement['account_no']) ?><br>
-                                        <strong>Total Amount:</strong> $<?= number_format($statement['total_amount'], 2) ?><br>
-                                        <strong>Unpaid Amount:</strong> $<?= number_format($statement['unpaid_amount'], 2) ?>
+                                        <strong>Total Amount:</strong> ₱<?= number_format($statement['total_amount'], 2) ?><br>
+                                        <strong>Unpaid Amount:</strong> ₱<?= number_format($statement['unpaid_amount'], 2) ?>
                                     </div>
                                 <?php else: ?>
                                     <select class="form-select <?= isset($errors['statement_id']) ? 'is-invalid' : '' ?>"
@@ -55,7 +55,7 @@
                                                 <?php else: ?>
                                                     <?= htmlspecialchars($stmt['first_name'] . ' ' . $stmt['last_name']) ?>
                                                 <?php endif; ?>
-                                                (Due: $<?= number_format($stmt['unpaid_amount'], 2) ?>)
+                                                (Due: ₱<?= number_format($stmt['unpaid_amount'], 2) ?>)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -128,7 +128,7 @@
                             <div class="col-md-6">
                                 <label for="paid_amount" class="form-label">Amount Paid *</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">₱</span>
                                     <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['paid_amount']) ? 'is-invalid' : '' ?>"
                                         id="paid_amount" name="paid_amount" value="<?= htmlspecialchars($formData['paid_amount']) ?>" required>
                                     <?php if (isset($errors['paid_amount'])): ?>
@@ -141,7 +141,7 @@
                             <div class="col-md-6">
                                 <label for="adv_payment" class="form-label">Advance Payment</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">₱</span>
                                     <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['adv_payment']) ? 'is-invalid' : '' ?>"
                                         id="adv_payment" name="adv_payment" value="<?= htmlspecialchars($formData['adv_payment']) ?>">
                                     <?php if (isset($errors['adv_payment'])): ?>

@@ -115,7 +115,7 @@
                             <div class="mb-2 row">
                                 <label class="col-sm-4 col-form-label text-muted">Statement Total</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-plaintext">$<?= number_format($payment['statement_amount'], 2) ?></p>
+                                    <p class="form-control-plaintext">₱<?= number_format($payment['statement_amount'], 2) ?></p>
                                 </div>
                             </div>
                         </div>
@@ -130,12 +130,12 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <p class="mb-1 text-muted">Amount Paid:</p>
-                                            <h3 class="text-success">$<?= number_format($payment['paid_amount'], 2) ?></h3>
+                                            <h3 class="text-success">₱<?= number_format($payment['paid_amount'], 2) ?></h3>
                                         </div>
                                         <?php if ($payment['adv_payment'] > 0): ?>
                                             <div class="col-md-6">
                                                 <p class="mb-1 text-muted">Advance Payment:</p>
-                                                <h3>$<?= number_format($payment['adv_payment'], 2) ?></h3>
+                                                <h3>₱<?= number_format($payment['adv_payment'], 2) ?></h3>
                                             </div>
                                         <?php endif; ?>
                                     </div>
@@ -163,7 +163,7 @@
                                     </p>
                                     <p class="mb-1">
                                         <strong>Remaining Balance:</strong>
-                                        $<?= number_format($statement['unpaid_amount'], 2) ?>
+                                        ₱<?= number_format($statement['unpaid_amount'], 2) ?>
                                     </p>
                                 </div>
                             <?php endif; ?>
@@ -209,26 +209,26 @@
                                     <?php foreach ($statementItems as $item): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($item['description']) ?></td>
-                                            <td class="text-end">$<?= number_format($item['amount'], 2) ?></td>
-                                            <td class="text-end">$<?= number_format($item['tax_amount'], 2) ?></td>
-                                            <td class="text-end">$<?= number_format($item['total_amount'], 2) ?></td>
+                                            <td class="text-end">₱<?= number_format($item['amount'], 2) ?></td>
+                                            <td class="text-end">₱<?= number_format($item['tax_amount'], 2) ?></td>
+                                            <td class="text-end">₱<?= number_format($item['total_amount'], 2) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th colspan="3" class="text-end">Total</th>
-                                        <th class="text-end">$<?= number_format($statement['total_amount'], 2) ?></th>
+                                        <th class="text-end">₱<?= number_format($statement['total_amount'], 2) ?></th>
                                     </tr>
                                     <tr>
                                         <th colspan="3" class="text-end">Amount Paid (This Payment)</th>
-                                        <th class="text-end text-success">$<?= number_format($payment['paid_amount'], 2) ?></th>
+                                        <th class="text-end text-success">₱<?= number_format($payment['paid_amount'], 2) ?></th>
                                     </tr>
                                     <?php if ($statement['unpaid_amount'] > 0): ?>
                                         <tr>
                                             <th colspan="3" class="text-end">Remaining Balance</th>
                                             <th class="text-end <?= $statement['unpaid_amount'] > 0 ? 'text-danger' : '' ?>">
-                                                $<?= number_format($statement['unpaid_amount'], 2) ?>
+                                                ₱<?= number_format($statement['unpaid_amount'], 2) ?>
                                             </th>
                                         </tr>
                                     <?php endif; ?>

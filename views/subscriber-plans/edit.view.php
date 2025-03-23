@@ -18,7 +18,7 @@
                     <div class="alert alert-info mb-4">
                         <strong>Current Plan:</strong> <?= htmlspecialchars($subscriberPlan['plan_name']) ?>
                         <br>
-                        <strong>Monthly Fee:</strong> $<?= number_format($subscriberPlan['monthly_fee'], 2) ?>
+                        <strong>Monthly Fee:</strong> ₱<?= number_format($subscriberPlan['monthly_fee'], 2) ?>
                         <?php if (!empty($subscriberPlan['speed_rate'])): ?>
                             <br>
                             <strong>Speed Rate:</strong> <?= htmlspecialchars($subscriberPlan['speed_rate']) ?>
@@ -39,7 +39,7 @@
                                     id="plan_id" name="plan_id" required>
                                     <?php foreach ($plans as $plan): ?>
                                         <option value="<?= $plan['plan_id'] ?>" <?= $formData['plan_id'] == $plan['plan_id'] ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($plan['plan_name']) ?> - $<?= number_format($plan['monthly_fee'], 2) ?>
+                                            <?= htmlspecialchars($plan['plan_name']) ?> - ₱<?= number_format($plan['monthly_fee'], 2) ?>
                                             <?= !empty($plan['speed_rate']) ? ' (' . htmlspecialchars($plan['speed_rate']) . ')' : '' ?>
                                         </option>
                                     <?php endforeach; ?>

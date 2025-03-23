@@ -80,9 +80,9 @@
                                                 <?= date('M d, Y', strtotime($statement['bill_period_end'])) ?>
                                             </td>
                                             <td>
-                                                $<?= number_format($statement['total_amount'], 2) ?>
+                                                ₱<?= number_format($statement['total_amount'], 2) ?>
                                                 <?php if ($statement['status'] !== 'Paid' && $statement['unpaid_amount'] < $statement['total_amount']): ?>
-                                                    <div class="text-muted small">Unpaid: $<?= number_format($statement['unpaid_amount'], 2) ?></div>
+                                                    <div class="text-muted small">Unpaid: ₱<?= number_format($statement['unpaid_amount'], 2) ?></div>
                                                 <?php endif; ?>
                                             </td>
                                             <td><?= date('M d, Y', strtotime($statement['due_date'])) ?></td>

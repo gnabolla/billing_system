@@ -74,7 +74,7 @@
                             <div class="mb-3 row">
                                 <label class="col-sm-4 col-form-label text-muted">Monthly Fee</label>
                                 <div class="col-sm-8">
-                                    <p class="form-control-plaintext">$<?= number_format($plan['monthly_fee'], 2) ?></p>
+                                    <p class="form-control-plaintext">₱<?= number_format($plan['monthly_fee'], 2) ?></p>
                                 </div>
                             </div>
                             

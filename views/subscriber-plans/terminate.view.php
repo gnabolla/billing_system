@@ -20,7 +20,7 @@
                         <p>You are about to terminate the following plan:</p>
                         <ul>
                             <li><strong>Plan:</strong> <?= htmlspecialchars($subscriberPlan['plan_name']) ?></li>
-                            <li><strong>Monthly Fee:</strong> $<?= number_format($subscriberPlan['monthly_fee'], 2) ?></li>
+                            <li><strong>Monthly Fee:</strong> ₱<?= number_format($subscriberPlan['monthly_fee'], 2) ?></li>
                             <li><strong>Start Date:</strong> <?= date('F d, Y', strtotime($subscriberPlan['start_date'])) ?></li>
                         </ul>
                         <p>This action will mark the plan as terminated and set an end date. It cannot be undone.</p>

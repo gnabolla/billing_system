@@ -299,7 +299,7 @@
                                         <tr>
                                             <td><?= htmlspecialchars($payment['or_no']) ?></td>
                                             <td><?= htmlspecialchars($payment['statement_no']) ?></td>
-                                            <td>$<?= number_format($payment['paid_amount'], 2) ?></td>
+                                            <td>₱<?= number_format($payment['paid_amount'], 2) ?></td>
                                             <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
                                             <td><?= htmlspecialchars($payment['payment_method']) ?></td>
                                             <td>

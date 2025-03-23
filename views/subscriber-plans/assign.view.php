@@ -46,7 +46,7 @@
                                         <option value="">-- Select a plan --</option>
                                         <?php foreach ($plans as $plan): ?>
                                             <option value="<?= $plan['plan_id'] ?>" <?= $formData['plan_id'] == $plan['plan_id'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars($plan['plan_name']) ?> - $<?= number_format($plan['monthly_fee'], 2) ?>
+                                                <?= htmlspecialchars($plan['plan_name']) ?> - ₱<?= number_format($plan['monthly_fee'], 2) ?>
                                                 <?= !empty($plan['speed_rate']) ? ' (' . htmlspecialchars($plan['speed_rate']) . ')' : '' ?>
                                             </option>
                                         <?php endforeach; ?>

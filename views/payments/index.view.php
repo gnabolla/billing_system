@@ -77,10 +77,10 @@
                                             </td>
                                             <td><?= htmlspecialchars($payment['statement_no']) ?></td>
                                             <td>
-                                                $<?= number_format($payment['paid_amount'], 2) ?>
+                                                ₱<?= number_format($payment['paid_amount'], 2) ?>
                                                 <?php if ($payment['adv_payment'] > 0): ?>
                                                     <div class="text-muted small">
-                                                        Adv. Payment: $<?= number_format($payment['adv_payment'], 2) ?>
+                                                        Adv. Payment: ₱<?= number_format($payment['adv_payment'], 2) ?>
                                                     </div>
                                                 <?php endif; ?>
                                             </td>

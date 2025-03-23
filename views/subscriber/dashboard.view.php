@@ -30,7 +30,7 @@
                             <div class="card <?= $totalUnpaid > 0 ? 'bg-warning' : 'bg-success' ?> text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Outstanding Balance</h5>
-                                    <p class="card-text display-4">$<?= number_format($totalUnpaid, 2) ?></p>
+                                    <p class="card-text display-4">₱<?= number_format($totalUnpaid, 2) ?></p>
                                     <a href="<?= url('subscriber/statements') ?>" class="btn btn-light btn-sm">View Statements</a>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                                                     <?= htmlspecialchars($statement['statement_no']) ?>
                                                                 </a>
                                                             </td>
-                                                            <td>$<?= number_format($statement['total_amount'], 2) ?></td>
+                                                            <td>₱<?= number_format($statement['total_amount'], 2) ?></td>
                                                             <td><?= date('M d, Y', strtotime($statement['due_date'])) ?></td>
                                                             <td>
                                                                 <?php if ($statement['status'] === 'Paid'): ?>
@@ -133,7 +133,7 @@
                                                                     <?= htmlspecialchars($payment['or_no']) ?>
                                                                 </a>
                                                             </td>
-                                                            <td>$<?= number_format($payment['paid_amount'], 2) ?></td>
+                                                            <td>₱<?= number_format($payment['paid_amount'], 2) ?></td>
                                                             <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
                                                             <td><?= htmlspecialchars($payment['payment_method']) ?></td>
                                                         </tr>
@@ -175,7 +175,7 @@
                                     <?php foreach ($activePlans as $plan): ?>
                                         <tr>
                                             <td><strong><?= htmlspecialchars($plan['plan_name']) ?></strong></td>
-                                            <td>$<?= number_format($plan['monthly_fee'], 2) ?></td>
+                                            <td>₱<?= number_format($plan['monthly_fee'], 2) ?></td>
                                             <td><?= htmlspecialchars($plan['speed_rate']) ?></td>
                                             <td><?= date('M d, Y', strtotime($plan['start_date'])) ?></td>
                                             <td><?= htmlspecialchars($plan['billing_cycle']) ?></td>

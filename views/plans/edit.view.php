@@ -68,7 +68,7 @@
                             <div class="col-md-4">
                                 <label for="monthly_fee" class="form-label">Monthly Fee *</label>
                                 <div class="input-group">
-                                    <span class="input-group-text">$</span>
+                                    <span class="input-group-text">₱</span>
                                     <input type="number" step="0.01" min="0" class="form-control <?= isset($errors['monthly_fee']) ? 'is-invalid' : '' ?>" 
                                         id="monthly_fee" name="monthly_fee" value="<?= htmlspecialchars($formData['monthly_fee']) ?>" required>
                                     <?php if (isset($errors['monthly_fee'])): ?>
