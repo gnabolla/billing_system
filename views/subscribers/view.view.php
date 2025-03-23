@@ -273,50 +273,40 @@
             </div>
 
             <!-- Recent Payments -->
+            <!-- Recent Payments -->
             <div class="card">
                 <div class="card-header">
                     <h5>Recent Payments</h5>
                 </div>
                 <div class="card-body">
-                    <?php if (empty($subscriberPlans)): ?>
-                        <p class="text-muted">No active plans found. Assign a plan to this subscriber.</p>
+                    <?php if (empty($payments)): ?>
+                        <p class="text-muted">No payment records found for this subscriber.</p>
                     <?php else: ?>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Plan</th>
-                                        <th>Monthly Fee</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Status</th>
+                                        <th>Receipt #</th>
+                                        <th>Statement #</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Method</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($subscriberPlans as $plan): ?>
+                                    <?php foreach ($payments as $payment): ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($plan['plan_name']) ?></td>
-                                            <td>$<?= number_format($plan['monthly_fee'], 2) ?></td>
-                                            <td><?= date('M d, Y', strtotime($plan['start_date'])) ?></td>
-                                            <td><?= !empty($plan['end_date']) ? date('M d, Y', strtotime($plan['end_date'])) : '<em>Active</em>' ?></td>
-                                            <td>
-                                                <?php if ($plan['status'] === 'Active'): ?>
-                                                    <span class="badge bg-success">Active</span>
-                                                <?php else: ?>
-                                                    <span class="badge bg-secondary"><?= htmlspecialchars($plan['status']) ?></span>
-                                                <?php endif; ?>
-                                            </td>
+                                            <td><?= htmlspecialchars($payment['or_no']) ?></td>
+                                            <td><?= htmlspecialchars($payment['statement_no']) ?></td>
+                                            <td>$<?= number_format($payment['paid_amount'], 2) ?></td>
+                                            <td><?= date('M d, Y', strtotime($payment['payment_date'])) ?></td>
+                                            <td><?= htmlspecialchars($payment['payment_method']) ?></td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <a href="<?= url('subscriber-plans/edit?id=' . $plan['subscriber_plan_id']) ?>" class="btn btn-outline-primary">
-                                                        <i class="bi bi-pencil"></i>
+                                                    <a href="<?= url('payments/view?id=' . $payment['payment_id']) ?>" class="btn btn-outline-info">
+                                                        <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <?php if ($plan['status'] === 'Active'): ?>
-                                                        <a href="<?= url('subscriber-plans/terminate?id=' . $plan['subscriber_plan_id']) ?>" class="btn btn-outline-danger">
-                                                            <i class="bi bi-x-circle"></i>
-                                                        </a>
-                                                    <?php endif; ?>
                                                 </div>
                                             </td>
                                         </tr>
