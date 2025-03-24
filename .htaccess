@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /billing
+RewriteBase /billing_system
 
 # If the requested resource exists as an actual file or directory, serve it directly
 RewriteCond %{REQUEST_FILENAME} !-f
