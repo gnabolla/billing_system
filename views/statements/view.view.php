@@ -269,6 +269,9 @@
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a href="<?= url('statements') ?>" class="btn btn-outline-secondary me-md-2">Back to Statements</a>
+                        <a href="<?= url('statements/pdf?id=' . $statement['statement_id']) ?>" class="btn btn-primary me-md-2">
+                            <i class="bi bi-download"></i> Download PDF
+                        </a>
                         <a href="#" class="btn btn-outline-primary me-md-2" onclick="window.print();">
                             <i class="bi bi-printer"></i> Print Statement
                         </a>

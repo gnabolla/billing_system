@@ -103,23 +103,23 @@ class ReceiptGenerator extends FPDF
         
         foreach ($this->items as $item) {
             $this->Cell(100, 8, $item['description'], 1);
-            $this->Cell(30, 8, '$' . number_format($item['amount'], 2), 1, 0, 'R');
-            $this->Cell(20, 8, '$' . number_format($item['tax_amount'], 2), 1, 0, 'R');
-            $this->Cell(30, 8, '$' . number_format($item['total_amount'], 2), 1, 1, 'R');
+            $this->Cell(30, 8, 'P' . number_format($item['amount'], 2), 1, 0, 'R');
+            $this->Cell(20, 8, 'P' . number_format($item['tax_amount'], 2), 1, 0, 'R');
+            $this->Cell(30, 8, 'P' . number_format($item['total_amount'], 2), 1, 1, 'R');
         }
         
         // Add totals
         $this->SetFont('Arial', 'B', 10);
         
         $this->Cell(150, 8, 'Total Statement Amount:', 1, 0, 'R');
-        $this->Cell(30, 8, '$' . number_format($this->statement['total_amount'], 2), 1, 1, 'R');
+        $this->Cell(30, 8, 'P' . number_format($this->statement['total_amount'], 2), 1, 1, 'R');
         
         $this->Cell(150, 8, 'Amount Paid:', 1, 0, 'R');
-        $this->Cell(30, 8, '$' . number_format($this->payment['paid_amount'], 2), 1, 1, 'R');
+        $this->Cell(30, 8, 'P' . number_format($this->payment['paid_amount'], 2), 1, 1, 'R');
         
         if ($this->statement['unpaid_amount'] > 0) {
             $this->Cell(150, 8, 'Remaining Balance:', 1, 0, 'R');
-            $this->Cell(30, 8, '$' . number_format($this->statement['unpaid_amount'], 2), 1, 1, 'R');
+            $this->Cell(30, 8, 'P' . number_format($this->statement['unpaid_amount'], 2), 1, 1, 'R');
         }
         
         $this->Ln(10);
