@@ -13,15 +13,19 @@ class Database
     /**
      * Database constructor.
      *
-     * @param array  $config   Array of config details (host, port, dbname, charset).
-     * @param string $username DB username.
-     * @param string $password DB password.
+     * @param array $config Array of config details (host, port, dbname, charset, username, password).
      */
-    public function __construct(array $config, string $username = 'root', string $password = '')
+    public function __construct(array $config)
     {
-        // Build DSN string. Example: mysql:host=localhost;port=3306;dbname=isur_system;charset=utf8mb4
+        // Build DSN string. Example:
+        // mysql:host=localhost;port=3306;dbname=billing_db;charset=utf8mb4
         $dsn = 'mysql:' . http_build_query($config, '', ';');
 
+        // Pull username and password directly from $config
+        $username = $config['username'] ?? 'root';
+        $password = $config['password'] ?? '';
+
+        // Create the PDO connection
         $this->connection = new PDO($dsn, $username, $password, [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);

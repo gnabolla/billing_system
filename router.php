@@ -13,7 +13,6 @@ if (strpos($uri, $basePath) === 0) {
 if (empty($uri) || $uri === '/') {
     $uri = '/';
 }
-
 $routes = [
   "/" => "controllers/index.php",
   "/login" => "controllers/login.php",
@@ -71,7 +70,6 @@ $routes = [
   "/subscriber/payment" => "controllers/subscriber/payment.php",
   "/subscriber/plans" => "controllers/subscriber/plans.php",
 ];
-
 function routesToController(string $uri, array $routes): void
 {
   if (array_key_exists($uri, $routes)) {
