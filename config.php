@@ -10,6 +10,6 @@ return [
         'password' => 'AsAaKo100!))',
     ],
     'app' => [
-        'base_path' => '/billing_system'
+        'base_path' => 'http://64.23.192.138/billing_system'
     ]
 ];
